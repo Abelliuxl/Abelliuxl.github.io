@@ -1,33 +1,25 @@
-from git import Repo
+import subprocess
+import os
 
-# Git 仓库路径
-repo_path = '/home/liuxxl/Abelliuxl.github.io'
+def git_commit_and_push(commit_message, repo_path):
+    try:
+        # 切换到仓库目录
+        os.chdir(repo_path)
 
-# 提交的消息
-commit_message = '自动提交更改'
+        # 添加所有文件到暂存区
+        subprocess.check_output('git add .', shell=True, stderr=subprocess.STDOUT)
 
-# GitHub 个人访问令牌
-access_token = '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'
+        # 提交所有改动
+        subprocess.check_output(f'git commit -m "{commit_message}"', shell=True, stderr=subprocess.STDOUT)
 
-# 打开 Git 仓库
-repo = Repo(repo_path)
+        # 推送改动到远程仓库
+        subprocess.check_output('git push', shell=True, stderr=subprocess.STDOUT)
 
-# 配置远程仓库
-origin = repo.remote(name='origin')
-origin_url = origin.url
+    except subprocess.CalledProcessError as e:
+        print("尝试提交和推送更改时出现错误。")
+        print("输出:", e.output.decode('utf8'))  # 使用UTF-8编码解码output
+        return False  # 表示操作未成功
 
-# 将访问令牌添加到远程仓库 URL
-new_origin_url = origin_url.replace('https://', f'https://Abelliuxl:{access_token}@')
-repo.git.remote('set-url', 'origin', new_origin_url)
+    return True  # 表示操作成功
 
-# 获取当前分支
-current_branch = repo.active_branch
-
-# 将所有更改添加到暂存区
-repo.git.add(all=True)
-
-# 创建提交
-repo.index.commit(commit_message)
-
-# 推送到远程仓库
-origin.push(current_branch)
+git_commit_and_push("update", "/home/liuxxl/Abelliuxl.github.io")
