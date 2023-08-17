@@ -17,7 +17,7 @@ origin = repo.remote(name='origin')
 origin_url = origin.url
 
 # 将访问令牌添加到远程仓库 URL
-new_origin_url = origin_url.replace('https://', f'https://{access_token}@')
+new_origin_url = origin_url.replace('https://', f'https://Abelliuxl:{access_token}@')
 repo.git.remote('set-url', 'origin', new_origin_url)
 
 # 获取当前分支
